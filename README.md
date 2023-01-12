@@ -21,13 +21,19 @@ Instructions on how to install & import VCSV into Java projects are available <a
 
 As mentioned above, this library is meant to be used with VStats. With VCSV, users can easily convert data into arrays, which can then be inputted into VStats functions. 
 
-All the methods in VCSV are <samp>static</samp>, so they can be called without creating VCSV objects. This works similar to the Java Math library. 
+There are 2 editions of VCSV: VCSVLocal and VCSVWeb. VCSVLocal is meant for analyzing CSV files where the user has a local copy of them on their machine. VCSVWeb is meant for analyzing CSV files that are located on the web. 
+
+All the methods in both VCSV libraries are <samp>static</samp>, so they can be called without creating VCSV objects. This works similar to the Java Math library. 
 
 ## Documentation 
 
 Java documentation for VCSV is available <a target="_blank" href="https://captmd-11.github.io/blog/vcsv/VCSVHTML/VCSV.html">here</a>. 
 
 ## Version History
+
+### v1.1
+- created 2 editions of VCSV: VCSVLocal and VCSVWeb
+- added <samp>getColumnOfStrings</samp> methods to both classes
 
 ### v1.0
 - RELEASE

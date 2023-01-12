@@ -1,5 +1,5 @@
 /*
- * This is VCSV, a Java library made by Vignesh Nydhruva, that helps run VStats functions on CSV files. 
+ * This is VCSVWeb, a Java library made by Vignesh Nydhruva, that helps run VStats functions on CSV files. 
     Copyright (C) 2022  Vignesh Nydhruva
 
     This program is free software: you can redistribute it and/or modify
@@ -16,29 +16,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class VCSV {
+public class VCSVWeb {
 
-    private VCSV() {
+    private VCSVWeb() {
 
     }
 
     /**
      * Returns the number of rows that contain data in a CSV file.
      * 
-     * @param filePath the path of the CSV file (with respect to the root directory
-     *                 of the Java project).
+     * @param urlPath the URL to the CSV file on the web.
      * @return the number of rows that contain data in the CSV file with location
-     *         <strong>filePath</strong>.
+     *         <strong>urlPath</strong>.
      */
-    public static int getNumRows(String filePath) {
-        File file = new File(filePath);
+    public static int getNumRows(String urlPath) {
         try {
             int count = 1;
-            Scanner scanner = new Scanner(file);
+            URL url = new URL(urlPath);
+            Scanner scanner = new Scanner(url.openStream());
             String line = scanner.nextLine();
             while (scanner.hasNextLine()) {
                 count++;
@@ -54,17 +53,15 @@ public class VCSV {
     /**
      * Returns the number of columns that contain data in a CSV file.
      * 
-     * @param filePath the path of the CSV file (with respect to the root directory
-     *                 of
-     *                 the Java project).
+     * @param urlPath the URL to the CSV file on the web.
      * @return the number of columns that contain data in the CSV file with location
-     *         <strong>filePath</strong>.
+     *         <strong>urlPath</strong>.
      */
-    public static int getNumCols(String filePath) {
-        File file = new File(filePath);
+    public static int getNumCols(String urlPath) {
         try {
             int count = 0;
-            Scanner scanner = new Scanner(file);
+            URL url = new URL(urlPath);
+            Scanner scanner = new Scanner(url.openStream());
             String line = scanner.nextLine();
             for (int i = 0; i < line.length(); i++) {
                 if (line.substring(i, i + 1).equals(","))
@@ -84,17 +81,16 @@ public class VCSV {
      * input column contains a character that cannot be converted into a
      * <code>double</code>.
      * 
-     * @param filePath the path of the CSV file (with respect to the root directory
-     *                 of the Java project).
-     * @param row      the input row number (0-based index logic).
+     * @param urlPath the URL to the CSV file on the web.
+     * @param row     the input row number (0-based index logic).
      * @return an array of numbers that exist in row <strong>row</strong> of the CSV
-     *         file located at <strong>filePath</strong>.
+     *         file located at <strong>urlPath</strong>.
      */
-    public static double[] getRowOfNumbers(String filePath, int row) {
-        File file = new File(filePath);
+    public static double[] getRowOfNumbers(String urlPath, int row) {
         ArrayList<Double> res = new ArrayList<Double>();
         try {
-            Scanner scanner = new Scanner(file);
+            URL url = new URL(urlPath);
+            Scanner scanner = new Scanner(url.openStream());
             String line = scanner.nextLine();
             int curr = 0;
             while (scanner.hasNextLine()) {
@@ -134,23 +130,60 @@ public class VCSV {
      * input column contains a character that cannot be converted into a
      * <code>double</code>.
      * 
-     * @param filePath the path of the CSV file (with respect to the root directory
-     *                 of the Java project).
-     * @param col      the input column number (0-based index logic).
+     * @param urlPath the URL to the CSV file on the web.
      * @return an array of numbers that exist in column <strong>col</strong> of the
-     *         CSV file located at <strong>filePath</strong>.
+     *         CSV file located at <strong>urlPath</strong>.
      */
-    public static double[] getColumnOfNumbers(String filePath, int col) {
-        File file = new File(filePath);
+    public static String[] getColumnOfStrings(String urlPath, int col) {
+        ArrayList<String> res = new ArrayList<String>();
+        try {
+            URL url = new URL(urlPath);
+            Scanner scanner = new Scanner(url.openStream());
+            String line = scanner.nextLine();
+            line = scanner.nextLine();
+            while (line.length() != 0) {
+                if (col == 0)
+                    res.add(line.substring(0, line.indexOf(",")));
+                else if (col == getNumCols(urlPath) - 1)
+                    res.add(line.substring(line.lastIndexOf(",") + 1));
+                else
+                    res.add(
+                            line.substring(getNthIndexOf(line, col, ",") + 1, getNthIndexOf(line, col +
+                                    1, ",")));
+                line = scanner.nextLine();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        String[] output = new String[res.size()];
+        for (int i = 0; i < res.size(); i++) {
+            output[i] = res.get(i);
+        }
+        return output;
+    }
+
+    /**
+     * Returns an array of numbers that exist in a certain column of a CSV file.
+     * <p>
+     * This method throws <code>java.lang.NumberFormatException</code> when the
+     * input column contains a character that cannot be converted into a
+     * <code>double</code>.
+     * 
+     * @param urlPath the URL to the CSV file on the web.
+     * @return an array of numbers that exist in column <strong>col</strong> of the
+     *         CSV file located at <strong>urlPath</strong>.
+     */
+    public static double[] getColumnOfNumbers(String urlPath, int col) {
         ArrayList<Double> res = new ArrayList<Double>();
         try {
-            Scanner scanner = new Scanner(file);
+            URL url = new URL(urlPath);
+            Scanner scanner = new Scanner(url.openStream());
             String line = scanner.nextLine();
             line = scanner.nextLine();
             while (line.length() != 0) {
                 if (col == 0)
                     res.add(Double.parseDouble(line.substring(0, line.indexOf(","))));
-                else if (col == getNumCols(filePath) - 1)
+                else if (col == getNumCols(urlPath) - 1)
                     res.add(Double.parseDouble(line.substring(line.lastIndexOf(",") + 1)));
                 else
                     res.add(Double.parseDouble(
