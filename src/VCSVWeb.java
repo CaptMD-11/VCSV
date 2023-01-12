@@ -131,6 +131,7 @@ public class VCSVWeb {
      * <code>double</code>.
      * 
      * @param urlPath the URL to the CSV file on the web.
+     * @param col     the input column number (0-based index logic).
      * @return an array of numbers that exist in column <strong>col</strong> of the
      *         CSV file located at <strong>urlPath</strong>.
      */
@@ -170,6 +171,7 @@ public class VCSVWeb {
      * <code>double</code>.
      * 
      * @param urlPath the URL to the CSV file on the web.
+     * @param col     the input column number (0-based index logic).
      * @return an array of numbers that exist in column <strong>col</strong> of the
      *         CSV file located at <strong>urlPath</strong>.
      */
